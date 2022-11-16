@@ -1,0 +1,2 @@
+#/bin/sh
+xdotool type $(grep -v '^#' ~/.local/share/dmn/snippets | rofi -dmenu -p snippet | cut -d' ' -f1)

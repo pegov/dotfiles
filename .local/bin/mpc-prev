@@ -1,0 +1,10 @@
+#!/bin/sh
+mpc prev
+dunstctl close-all
+SONG=$(mpc current)
+notify-send \
+  --expire-time=4000 \
+  --icon=/usr/share/icons/Papirus/128x128/devices/media-tape.svg \
+  "Now playing" \
+  "$SONG"
+

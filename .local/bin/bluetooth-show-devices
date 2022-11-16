@@ -1,0 +1,36 @@
+#!/bin/sh
+
+BLUETOOTH_DEVICES=""
+
+bluetooth_print() {
+    # bluetoothctl | while read -r; do
+        if [ "$(systemctl is-active "bluetooth.service")" = "active" ]; then
+            devices_paired=$(bluetoothctl devices Paired | grep Device | cut -d ' ' -f 2)
+            counter=0
+
+            for device in $devices_paired; do
+                device_info=$(bluetoothctl info "$device")
+
+                if echo "$device_info" | grep -q "Connected: yes"; then
+                    device_alias=$(echo "$device_info" | grep "Alias" | cut -d ' ' -f 2-)
+
+                    if [ $counter -gt 0 ]; then
+                        BLUETOOTH_DEVICES+="\n${device_alias}"
+                    else
+                        BLUETOOTH_DEVICES+="${device_alias}"
+                    fi
+
+                    counter=$((counter + 1))
+                fi
+            done
+            if [ -z "$BLUETOOTH_DEVICES"]; then
+              notify-send --icon=/usr/share/icons/Papirus/128x128/devices/blueman-device.svg --expire-time=4000 "Bluetooth" "No devices"
+            else
+              notify-send --icon=/usr/share/icons/Papirus/128x128/devices/blueman-device.svg --expire-time=4000 "Bluetooth" "$BLUETOOTH_DEVICES"
+            fi
+        else
+            notify-send --icon=/usr/share/icons/Papirus/128x128/devices/blueman-device.svg --expire-time=4000 "Bluetooth" "Turned off"
+        fi
+}
+
+bluetooth_print

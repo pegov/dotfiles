@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if bluetoothctl show | grep -q "Powered: no"; then
+    bluetoothctl power on >> /dev/null
+    sleep 1
+fi
+
+uuids=$(bluetoothctl devices | cut -f2 -d' ')
+echo "$uuids" | while read -r line; do
+    bluetoothctl disconnect "$line" >> /dev/null
+    bluetoothctl connect "$line" >> /dev/null
+done

@@ -1,0 +1,5 @@
+next_img k Right
+prev_img j Left
+
+zoom_in i
+zoom_out o

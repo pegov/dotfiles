@@ -1,0 +1,25 @@
+#!/bin/bash -e
+IMAGE=/tmp/i3lock.png
+BLURTYPE="0x25"
+HEX=$(openssl rand -hex 1)
+notify-send HEX "$HEX"
+i3-msg "workspace 1"
+flameshot full -p $IMAGE
+convert \
+  $IMAGE \
+  -blur $BLURTYPE \
+  $IMAGE
+D=$(date)
+DATE=$(date +"%d.%m.%Y %A %H:%M:%S")
+hdate () {
+  awk -v date="$(date +%s -d "$D")" -v now="$(date +%s)" '
+    BEGIN {  diff = now - date;
+       if (diff > (24*60*60)) printf "%.0f days ago", diff/(24*60*60);
+       else if (diff > (60*60)) printf "%.0f hours ago", diff/(60*60);
+       else if (diff > 60) printf "%.0f minutes ago", diff/60;
+       else printf "%s seconds ago", diff;
+    }'
+}
+i3lock -n -f -i $IMAGE && notify-send i3lock "$HEX\nlocked: $(hdate)\n$DATE"
+rm $IMAGE
+

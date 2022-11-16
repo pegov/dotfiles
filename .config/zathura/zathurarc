@@ -1,0 +1,5 @@
+set adjust-open "best-fit"
+
+set zoom-min 10
+set default-bg "#1b1b25"
+set default-fg "#dedede"
