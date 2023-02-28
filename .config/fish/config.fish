@@ -74,13 +74,22 @@ end
 # fish_default_key_bindings
 fish_hybrid_key_bindings
 function fish_user_key_bindings
-	for mode in insert default visual
-		bind -M $mode \cf forward-char
-	end
+    for mode in insert default visual
+        bind -M $mode \cf forward-char
+    end
 end
 
-if [ "$TERM" != "alacritty" ]
+if [ "$TERM" = "xterm-kitty" ]
   alias ssh="kitty +kitten ssh"
+end
+
+if test -z (pgrep ssh-agent)
+    eval (ssh-agent -c) > /dev/null
+    set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
+    set -Ux SSH_AGENT_PID $SSH_AGENT_PID
+else
+    set -e SSH_AUTH_SOCK
+    set -e AGENT_PID
 end
 
 alias vim="nvim"
@@ -96,11 +105,26 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 alias dus="du -d 1 -h | sort -h -r"
 
-set -Ux MYVIMRC $HOME/.config/nvim/init.vim
+alias cj="cd (fd --type directory '' $HOME | fzf)"
+alias wj="cd (fd --type directory '' $HOME/dev | fzf)"
+alias oj="open (fd --type file '' $HOME | fzf)"
+alias vj="v (fd -H -E node_modules -E .git -E .cache -E '*.pyc' --type file '' $HOME | fzf)"
+
+alias s="systemctl"
+alias ss="sudo systemctl"
+
+set -Ux TERMINAL kitty
+
+set -Ux MYVIMRC $HOME/.config/nvim/init.lua
 set -Ux VISUAL nvim
 set -Ux EDITOR nvim
 set -Ux NNN_FIFO /tmp/nnn.fifo
 set -Ux NNN_PLUG f:preview-tui
+
+set -Ux XDG_CONFIG_HOME $HOME/.config
+set -Ux XDG_DATA_HOME $HOME/.local/share
+set -Ux XDG_CACHE_HOME $HOME/.cache
+set -Ux WINEPREFIX $XDG_DATA_HOME/wineprefixes/default
 
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.cargo/bin
