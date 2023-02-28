@@ -13,6 +13,8 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
+bindsym XF86AudioPlay exec --no-startup-id xdotool type " "
+
 bindsym $mod+minus exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym $mod+plus exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 
@@ -20,7 +22,7 @@ bindsym $mod+plus exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec kitty
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -40,15 +42,13 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
-# toggle split
-bindsym $mod+Shift+Return split toggle
-
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
 
 # change layout
-bindsym $mod+Shift+s layout default
-bindsym $mod+s layout tabbed
+bindsym $mod+Shift+s split horizontal; layout toggle tabbed split
+bindsym $mod+s layout toggle tabbed split
+bindsym $mod+Mod1+s layout toggle splith splitv
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -150,6 +150,8 @@ exec --no-startup-id nm-applet
 # notifications
 exec --no-startup-id dunst
 
+exec --no-startup-id firefox
+
 # bluetooth
 bindsym $mod+b exec --no-startup-id $HOME/.local/bin/bluetooth-connect-all
 bindsym $mod+Shift+b exec --no-startup-id $HOME/.local/bin/bluetooth-disconnect-all
@@ -157,9 +159,14 @@ bindsym $mod+Mod1+b exec --no-startup-id $HOME/.local/bin/bluetooth-show-devices
 
 # polybar
 bindsym $mod+p exec --no-startup-id $HOME/.local/bin/polybar-toggle
+bindsym --whole-window $mod+button8 exec --no-startup-id $HOME/.local/bin/polybar-toggle
 
 # browser
 bindsym $mod+w exec --no-startup-id firefox
+bindsym $mod+Shift+w exec --no-startup-id firefox -P
+
+# code
+bindsym $mod+c exec --no-startup-id code
 
 # calculator
 bindcode $mod+48 exec --no-startup-id kitty /bin/bash -c "bc -iql"
@@ -189,27 +196,27 @@ bindsym $mod+Control+F10 exec --no-startup-id $HOME/.local/bin/mpc-show-current-
 
 # open terminal inside workspace
 bindsym $mod+o exec --no-startup-id ~/.local/bin/workspace
+bindsym $mod+Shift+o exec --no-startup-id ~/.local/bin/workspace-paste
 bindsym $mod+Control+o exec --no-startup-id kitty nvim ~/.local/share/dmn/workspaces
 
 # type snippet
 bindsym $mod+i exec --no-startup-id ~/.local/bin/snippet
 bindsym $mod+Control+i exec --no-startup-id kitty nvim ~/.local/share/dmn/snippets
 
+# poweroff
+bindcode $mod+Mod1+115 exec --no-startup-id poweroff
+
+# wallpapers
+bindsym $mod+Shift+Prior exec --no-startup-id feh --bg-scale ~/Wallpapers/1.jpg
+bindsym $mod+Shift+Next exec --no-startup-id feh --bg-scale ~/Wallpapers/2.jpg
+
 # scratchpads
-for_window [instance="kitty-scratch"] floating enable
-for_window [instance="kitty-scratch"] move scratchpad
+for_window [instance="kitty-scratch|kitty-ncmpcpp"] floating enable
+for_window [instance="kitty-scratch|kitty-ncmpcpp"] move scratchpad
+for_window [instance="kitty-scratch|kitty-ncmpcpp"] move position center
+
 for_window [instance="kitty-scratch"] resize set 1920 1340
-for_window [instance="kitty-scratch"] move position center
 bindcode $mod+Control+61 exec --no-startup-id ~/.local/bin/scratchpad "kitty-scratch" "kitty --name kitty-scratch"
 
-for_window [instance="kitty-ncmpcpp"] floating enable
-for_window [instance="kitty-ncmpcpp"] move scratchpad
 for_window [instance="kitty-ncmpcpp"] resize set 2460 1380
-for_window [instance="kitty-ncmpcpp"] move position center
 bindsym $mod+Control+m exec --no-startup-id ~/.local/bin/scratchpad "kitty-ncmpcpp" "kitty --name kitty-ncmpcpp ncmpcpp"
-
-for_window [instance="kitty-taskwarrior"] floating enable
-for_window [instance="kitty-taskwarrior"] move scratchpad
-for_window [instance="kitty-taskwarrior"] resize set 2460 1380
-for_window [instance="kitty-taskwarrior"] move position center
-bindsym $mod+Control+n exec --no-startup-id ~/.local/bin/scratchpad "kitty-taskwarrior" "kitty --name kitty-taskwarrior taskwarrior-tui"
