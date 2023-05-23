@@ -5,7 +5,7 @@ systemctl --user import-environment DISPLAY
 export LIBVA_DRIVER_NAME=nvidia
 
 # increase repeat rate
-xset r rate 230 40
+xset r rate 200 50
 
 # set resolution and refresh rate
 xrandr --output DP-0 --primary --mode 2560x1440 --rate 144
