@@ -5,7 +5,7 @@ vim.o.errorbells = false
 vim.o.wrap = false
 
 vim.wo.number = true
-vim.wo.relativenumber = true
+vim.wo.relativenumber = false
 vim.wo.signcolumn = 'yes'
 
 vim.o.ignorecase = true
@@ -40,6 +40,9 @@ vim.o.smartindent = true
 vim.o.autoindent = true
 vim.o.breakindent = true
 
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.cmd [[
 fun! TrimWhitespace()
     let l:save = winsaveview()
@@ -66,7 +69,10 @@ require('packer').startup(function(use)
     -- Package manager
     use 'wbthomason/packer.nvim'
 
-    use { 'dracula/vim', as = 'dracula' }
+    use 'nvim-tree/nvim-tree.lua'
+
+    -- use { 'dracula/vim', as = 'dracula' }
+    use 'Mofiqul/dracula.nvim'
 
     -- Git related plugins
     use 'tpope/vim-fugitive'
@@ -79,6 +85,11 @@ require('packer').startup(function(use)
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
 
     use 'windwp/nvim-autopairs'
+
+    use({
+        "kylechui/nvim-surround",
+        tag = "*", -- Use for stability; omit to use `main` branch for the latest features
+    })
 
     use 'kassio/neoterm'
 
@@ -128,6 +139,10 @@ require('packer').startup(function(use)
     use 'simrat39/rust-tools.nvim'
     use 'saecki/crates.nvim'
 
+    use "ray-x/lsp_signature.nvim"
+
+    use "abecodes/tabout.nvim"
+
     if is_bootstrap then
         require('packer').sync()
     end
@@ -150,18 +165,72 @@ vim.api.nvim_create_autocmd('BufWritePost', {
     pattern = vim.fn.expand '$MYVIMRC',
 })
 
--- Dracula theme setup
-vim.g.dracula_colorterm = 0
-vim.g.dracula_italic = 0
+require("nvim-surround").setup({
+    -- Configuration here, or leave empty to use defaults
+})
+
+-- Dracula(original) theme setup
+-- vim.g.dracula_colorterm = 0
+-- vim.g.dracula_italic = 0
+-- vim.cmd [[colorscheme dracula]]
+-- vim.cmd [[highlight Normal ctermbg=None guibg=None]]
+-- vim.cmd [[highlight nonText ctermbg=None guibg=None]]
+
+-- Dracula(new lua impl) theme setup
+local dracula = require("dracula")
+dracula.setup({
+    -- customize dracula color palette
+    colors = {
+        bg = "#282A36",
+        fg = "#F8F8F2",
+        selection = "#44475A",
+        comment = "#6272A4",
+        red = "#FF5555",
+        orange = "#FFB86C",
+        yellow = "#F1FA8C",
+        green = "#50fa7b",
+        purple = "#BD93F9",
+        cyan = "#8BE9FD",
+        pink = "#FF79C6",
+        bright_red = "#FF6E6E",
+        bright_green = "#69FF94",
+        bright_yellow = "#FFFFA5",
+        bright_blue = "#D6ACFF",
+        bright_magenta = "#FF92DF",
+        bright_cyan = "#A4FFFF",
+        bright_white = "#FFFFFF",
+        menu = "#21222C",
+        visual = "#3E4452",
+        gutter_fg = "#4B5263",
+        nontext = "#3B4048",
+    },
+    -- show the '~' characters after the end of buffers
+    show_end_of_buffer = false, -- default false
+    -- use transparent background
+    transparent_bg = true, -- default false
+    -- set custom lualine background color
+    lualine_bg_color = "#44475a", -- default nil
+    -- set italic comment
+    italic_comment = false, -- default false
+    -- overrides the default highlights see `:h synIDattr`
+    overrides = {
+        -- Examples
+        -- NonText = { fg = dracula.colors().white }, -- set NonText fg to white
+        -- NvimTreeIndentMarker = { link = "NonText" }, -- link to NonText highlight
+        -- Nothing = {} -- clear highlight of Nothing
+    },
+})
+
 vim.cmd [[colorscheme dracula]]
-vim.cmd [[highlight Normal ctermbg=None guibg=None]]
-vim.cmd [[highlight nonText ctermbg=None guibg=None]]
+-- vim.cmd [[highlight Normal ctermbg=None guibg=None]]
+-- vim.cmd [[highlight nonText ctermbg=None guibg=None]]
 
 -- default maps
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 vim.keymap.set('n', '<leader>l', '^')
+vim.keymap.set('n', '<leader>e', '$')
 
 vim.keymap.set('n', 'n', "v:count > 0 ? 'nzzzv' : 'n'", { expr = true, silent = true })
 vim.keymap.set('n', 'N', "v:count > 0 ? 'nzzzv' : 'N'", { expr = true, silent = true })
@@ -195,12 +264,18 @@ vim.keymap.set('n', '<leader><S-Tab>', ':tabprev<CR>')
 vim.keymap.set('n', '<Tab>', ':bnext<CR>')
 vim.keymap.set('n', '<S-Tab>', ':bprev<CR>')
 
+require('nvim-tree').setup({
+    hijack_netrw = false
+})
+
+vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>')
+
 -- Set lualine as statusline
 -- See `:help lualine.txt`
 require('lualine').setup {
     options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'dracula-nvim',
         component_separators = '|',
         section_separators = '',
     },
@@ -305,7 +380,9 @@ require('nvim-treesitter.configs').setup {
     }
 }
 
-require 'treesitter-context'.setup {
+require('tabout').setup()
+
+require('treesitter-context').setup {
     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
     trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
@@ -408,7 +485,7 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 local lsp_formatting = function(bufnr)
     vim.lsp.buf.format({
         filter = function(client)
-            return client.name ~= "tsserver"
+            return client.name ~= "tsserver" and client.name ~= "pyright" and client.name ~= "clangd"
         end,
         bufnr = bufnr,
     })
@@ -530,6 +607,11 @@ local servers = {
         inlayHints = {
             locationLinks = false
         },
+        completion = {
+            callable = {
+                snippets = "add_parentheses",
+            }
+        }
     },
     tsserver = {},
     -- eslint = {},
@@ -545,12 +627,19 @@ local servers = {
 
 local null_ls = require("null-ls")
 
+
 null_ls.setup({
     sources = {
         null_ls.builtins.diagnostics.eslint_d,
         null_ls.builtins.code_actions.eslint_d,
-        null_ls.builtins.formatting.prettierd,
-        null_ls.builtins.formatting.eslint_d,
+        -- null_ls.builtins.formatting.prettierd.with({
+        --     disabled_filetypes = { "js", "json", "yaml", "markdown" },
+        -- }),
+        -- null_ls.builtins.formatting.eslint_d.with({
+        --     disabled_filetypes = { "js" },
+        -- }),
+        null_ls.builtins.formatting.isort,
+        null_ls.builtins.formatting.black,
     },
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
@@ -582,6 +671,18 @@ mason_lspconfig.setup_handlers {
                     config.settings.python.pythonPath = get_python_path(config.root_dir)
                 end,
             }
+        elseif server_name == 'clangd' then
+            require('lspconfig')[server_name].setup {
+                cmd = {
+                    "clangd",
+                    "--background-index",
+                    "--suggest-missing-includes",
+                    "--function-arg-placeholders=false"
+                },
+                capabilities = capabilities,
+                on_attach = on_attach,
+                settings = servers[server_name],
+            }
         elseif server_name == 'rust_analyzer' then
             local rt = require('rust-tools')
             local opts = {
@@ -602,9 +703,11 @@ mason_lspconfig.setup_handlers {
                             vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
                         end
                         nmap('<C-space>', rt.hover_actions.hover_actions, 'rust-tools hover')
-                    end
+                    end,
+                    settings = {
+                        ['rust-analyzer'] = servers[server_name],
+                    }
                 },
-                settings = servers[server_name]
             }
             rt.setup(opts)
         else
@@ -691,3 +794,69 @@ cmp.setup.cmdline(':', {
 })
 
 -- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
+
+cfg = {
+    verbose = false, -- show debug line number
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    -- If you want to hook lspsaga or other signature handler, pls set to false
+    doc_lines = 10, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
+    -- set to 0 if you DO NOT want any API comments be shown
+    -- This setting only take effect in insert mode, it does not affect signature help in normal
+    -- mode, 10 by default
+
+    max_height = 12, -- max height of signature floating_window
+    max_width = 80, -- max_width of signature floating_window
+    noice = false, -- set to true if you using noice to render markdown
+    wrap = true, -- allow doc/signature text wrap inside floating_window, useful if your lsp return doc/sig is too long
+    floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
+    floating_window_above_cur_line = true, -- try to place the floating above the current line when possible Note:
+    -- will set to true when fully tested, set to false will use whichever side has more space
+    -- this setting will be helpful if you do not want the PUM and floating win overlap
+
+    floating_window_off_x = 5, -- adjust float windows x position.
+    -- can be either a number or function
+    floating_window_off_y = function() -- adjust float windows y position. e.g. set to -2 can make floating window move up 2 lines
+        local linenr = vim.api.nvim_win_get_cursor(0)[1] -- buf line number
+        local pumheight = vim.o.pumheight
+        local winline = vim.fn.winline() -- line number in the window
+        local winheight = vim.fn.winheight(0)
+
+        -- window top
+        if winline - 1 < pumheight then
+            return pumheight
+        end
+
+        -- window bottom
+        if winheight - winline < pumheight then
+            return -pumheight
+        end
+        return 0
+    end,
+    close_timeout = 2000, -- close floating window after ms when laster parameter is entered
+    fix_pos = false, -- set to true, the floating window will not auto-close until finish all parameters
+    hint_enable = true, -- virtual hint enable
+    hint_prefix = "> ", -- Panda for parameter, NOTE: for the terminal not support emoji, might crash
+    hint_scheme = "String",
+    hi_parameter = "LspSignatureActiveParameter", -- how your parameter will be highlight
+    handler_opts = {
+        border = "rounded" -- double, rounded, single, shadow, none, or a table of borders
+    },
+    always_trigger = false, -- sometime show signature on new line or in middle of parameter can be confusing, set it to false for #58
+    auto_close_after = nil, -- autoclose signature float win after x sec, disabled if nil.
+    extra_trigger_chars = {}, -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
+    zindex = 200, -- by default it will be on top of all floating windows, set to <= 50 send it to bottom
+    padding = '', -- character to pad on left and right of signature can be ' ', or '|'  etc
+    transparency = nil, -- disabled by default, allow floating win transparent value 1~100
+    shadow_blend = 36, -- if you using shadow as border use this set the opacity
+    shadow_guibg = 'Black', -- if you using shadow as border use this set the color e.g. 'Green' or '#121315'
+    timer_interval = 200, -- default timer check interval set to lower value if you want to reduce latency
+    toggle_key = nil, -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
+    select_signature_key = nil, -- cycle to next signature, e.g. '<M-n>' function overloading
+    move_cursor_key = nil, -- imap, use nvim_set_current_win to move cursor between current win and floating
+}
+
+require('lsp_signature').setup(cfg)
+
+vim.keymap.set({ 'i', 'n' }, '<C-l>', function()
+    require('lsp_signature').toggle_float_win()
+end, { silent = true, noremap = true })
