@@ -87,6 +87,7 @@ enable-ipc = true
 [module/bluetoothctl]
 type = custom/script
 exec = ~/.config/polybar/scripts/system-bluetooth-bluetoothctl.sh
+interval = 30
 click-left = ~/.config/polybar/scripts/system-bluetooth-bluetoothctl.sh --toggle &
 format-prefix = "B "
 format-prefix-font = 3
