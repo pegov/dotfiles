@@ -139,6 +139,10 @@ bindsym $mod+Shift+Up resize grow height 10 px or 10 ppt
 bindsym $mod+Shift+Down resize shrink height 10 px or 10 ppt
 bindsym $mod+Shift+Right resize grow width 10 px or 10 ppt
 
+# another resize
+bindsym $mod+Control+h resize shrink width 5 px or 5 ppt
+bindsym $mod+Control+l resize grow width 5 px or 5 ppt
+
 for_window [class="mpv"] floating enable
 for_window [class="feh"] floating enable
 
