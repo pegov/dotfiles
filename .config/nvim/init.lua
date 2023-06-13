@@ -143,6 +143,8 @@ require('packer').startup(function(use)
 
     use "abecodes/tabout.nvim"
 
+    use "ThePrimeagen/harpoon"
+
     if is_bootstrap then
         require('packer').sync()
     end
@@ -230,7 +232,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 vim.keymap.set('n', '<leader>l', '^')
-vim.keymap.set('n', '<leader>e', '$')
 
 vim.keymap.set('n', 'n', "v:count > 0 ? 'nzzzv' : 'n'", { expr = true, silent = true })
 vim.keymap.set('n', 'N', "v:count > 0 ? 'nzzzv' : 'N'", { expr = true, silent = true })
@@ -343,7 +344,16 @@ require("telescope").setup {
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
-require("telescope").load_extension "file_browser"
+require("telescope").load_extension("file_browser")
+
+require("harpoon").setup()
+
+local harpoon_mark = require("harpoon.mark")
+local harpoon_ui = require("harpoon.ui")
+
+vim.keymap.set('n', '<leader>e', harpoon_mark.add_file)
+vim.keymap.set('n', '<C-e>', harpoon_ui.toggle_quick_menu)
+vim.keymap.set('n', '<C-j>', harpoon_ui.nav_next)
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -375,12 +385,11 @@ require('nvim-treesitter.configs').setup {
             init_selection = '<C-k>',
             -- scope_incremental = '<C->',
             node_incremental = '<C-k>',
-            node_decremental = '<C-j>',
         }
     }
 }
 
-require('tabout').setup()
+require('tabout').setup({})
 
 require('treesitter-context').setup {
     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
