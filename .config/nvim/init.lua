@@ -85,6 +85,7 @@ require('packer').startup(function(use)
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
 
     use 'windwp/nvim-autopairs'
+    use 'Vimjas/vim-python-pep8-indent'
 
     use({
         "kylechui/nvim-surround",
@@ -113,13 +114,15 @@ require('packer').startup(function(use)
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
 
-            -- Useful status updates for LSP
-            'j-hui/fidget.nvim',
-
             -- Additional lua configuration, makes nvim stuff amazing
             'folke/neodev.nvim',
         },
     }
+
+    use({
+        "j-hui/fidget.nvim",
+        tag = "legacy", -- to remove popup
+    })
 
     use { -- Autocompletion
         'hrsh7th/nvim-cmp',
@@ -144,6 +147,8 @@ require('packer').startup(function(use)
     use "abecodes/tabout.nvim"
 
     use "ThePrimeagen/harpoon"
+
+    use "petertriho/nvim-scrollbar"
 
     if is_bootstrap then
         require('packer').sync()
@@ -346,14 +351,131 @@ require("telescope").setup {
 pcall(require('telescope').load_extension, 'fzf')
 require("telescope").load_extension("file_browser")
 
-require("harpoon").setup()
+require("scrollbar").setup({
+    show = true,
+    show_in_active_only = false,
+    set_highlights = true,
+    folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
+    max_lines = false, -- disables if no. of lines in buffer exceeds this
+    hide_if_all_visible = false, -- Hides everything if all lines are visible
+    throttle_ms = 100,
+    handle = {
+        text = " ",
+        blend = 30, -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
+        color = nil,
+        color_nr = nil, -- cterm
+        highlight = "CursorColumn",
+        hide_if_all_visible = true, -- Hides handle if all lines are visible
+    },
+    marks = {
+        Cursor = {
+            text = " ",
+            priority = 99,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "Normal",
+        },
+        Search = {
+            text = { "-", "=" },
+            priority = 1,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "Search",
+        },
+        Error = {
+            text = { "-", "=" },
+            priority = 2,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "DiagnosticVirtualTextError",
+        },
+        Warn = {
+            text = { "-", "=" },
+            priority = 3,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "DiagnosticVirtualTextWarn",
+        },
+        Info = {
+            text = { "-", "=" },
+            priority = 4,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "DiagnosticVirtualTextInfo",
+        },
+        Hint = {
+            text = { "-", "=" },
+            priority = 5,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "DiagnosticVirtualTextHint",
+        },
+        Misc = {
+            text = { "-", "=" },
+            priority = 6,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "Normal",
+        },
+        GitAdd = {
+            text = "┆",
+            priority = 7,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsAdd",
+        },
+        GitChange = {
+            text = "┆",
+            priority = 7,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsChange",
+        },
+        GitDelete = {
+            text = "▁",
+            priority = 7,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsDelete",
+        },
+    },
+    handlers = {
+        cursor = false,
+        diagnostic = true,
+        gitsigns = false, -- Requires gitsigns
+        handle = true,
+        search = false, -- Requires hlslens
+        ale = false, -- Requires ALE
+    },
+})
 
+require("harpoon").setup()
 local harpoon_mark = require("harpoon.mark")
 local harpoon_ui = require("harpoon.ui")
 
 vim.keymap.set('n', '<leader>e', harpoon_mark.add_file)
 vim.keymap.set('n', '<C-e>', harpoon_ui.toggle_quick_menu)
-vim.keymap.set('n', '<C-j>', harpoon_ui.nav_next)
+vim.keymap.set('n', '<C-i>', harpoon_ui.nav_next)
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -382,9 +504,9 @@ require('nvim-treesitter.configs').setup {
     incremental_selection = {
         enable = true,
         keymaps = {
-            init_selection = '<C-k>',
+            -- init_selection = '<C-k>',
             -- scope_incremental = '<C->',
-            node_incremental = '<C-k>',
+            -- node_incremental = '<C-k>',
         }
     }
 }
@@ -537,7 +659,8 @@ local on_attach = function(client, bufnr)
     nmap('<leader>a', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
     nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-    nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+    -- nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+    nmap('gr', vim.lsp.buf.references, '[G]oto [R]eferences')
     nmap('gi', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
     nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
     nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
@@ -647,8 +770,8 @@ null_ls.setup({
         -- null_ls.builtins.formatting.eslint_d.with({
         --     disabled_filetypes = { "js" },
         -- }),
-        null_ls.builtins.formatting.isort,
         null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.isort,
     },
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
@@ -869,3 +992,8 @@ require('lsp_signature').setup(cfg)
 vim.keymap.set({ 'i', 'n' }, '<C-l>', function()
     require('lsp_signature').toggle_float_win()
 end, { silent = true, noremap = true })
+
+vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
+vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")
