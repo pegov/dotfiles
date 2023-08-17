@@ -145,6 +145,8 @@ bindsym $mod+Control+l resize grow width 5 px or 5 ppt
 
 for_window [class="mpv"] floating enable
 for_window [class="feh"] floating enable
+for_window [class="Lagoda"] floating enable
+for_window [class="Shahter"] floating enable
 
 # gui file manager
 bindsym $mod+e exec --no-startup-id Thunar
@@ -153,6 +155,8 @@ bindsym $mod+e exec --no-startup-id Thunar
 exec --no-startup-id nm-applet
 # notifications
 exec --no-startup-id dunst
+# blueman
+exec --no-startup-id blueman-applet
 
 exec --no-startup-id firefox
 
@@ -160,6 +164,7 @@ exec --no-startup-id firefox
 bindsym $mod+b exec --no-startup-id $HOME/.local/bin/bluetooth-connect-all
 bindsym $mod+Shift+b exec --no-startup-id $HOME/.local/bin/bluetooth-disconnect-all
 bindsym $mod+Mod1+b exec --no-startup-id $HOME/.local/bin/bluetooth-show-devices
+bindsym $mod+Shift+n exec --no-startup-id systemctl restart --user wireplumber
 
 # polybar
 bindsym $mod+p exec --no-startup-id $HOME/.local/bin/polybar-toggle
