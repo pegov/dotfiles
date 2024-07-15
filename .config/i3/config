@@ -46,9 +46,10 @@ bindsym $mod+Shift+l move right
 bindsym $mod+f fullscreen toggle
 
 # change layout
-bindsym $mod+Shift+s split horizontal; layout toggle tabbed split
+bindsym $mod+Mod1+s split horizontal; layout toggle tabbed split
 bindsym $mod+s layout toggle tabbed split
-bindsym $mod+Mod1+s layout toggle splith splitv
+# bindsym $mod+Shift+s layout toggle splith splitv
+bindsym $mod+Shift+s split toggle
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -147,6 +148,8 @@ for_window [class="mpv"] floating enable
 for_window [class="feh"] floating enable
 for_window [class="Lagoda"] floating enable
 for_window [class="Shahter"] floating enable
+for_window [class="amur"] floating enable
+for_window [class="pavucontrol"] floating enable
 
 # gui file manager
 bindsym $mod+e exec --no-startup-id Thunar
@@ -159,6 +162,8 @@ exec --no-startup-id dunst
 exec --no-startup-id blueman-applet
 
 exec --no-startup-id firefox
+
+# exec --no-startup-id easyeffects --gapplication-service
 
 # bluetooth
 bindsym $mod+b exec --no-startup-id $HOME/.local/bin/bluetooth-connect-all
@@ -183,7 +188,7 @@ bindcode $mod+48 exec --no-startup-id kitty /bin/bash -c "bc -iql"
 # screenshots
 bindsym $mod+F1 exec --no-startup-id $HOME/.local/bin/lock
 bindsym $mod+F5 exec --no-startup-id flameshot full -p ~/Screenshots
-bindsym $mod+F6 exec --no-startup-id flameshot gui -p ~/Screenshots
+bindsym $mod+F6 exec --no-startup-id flameshot gui
 
 # mpc
 bindsym $mod+m exec --no-startup-id mpc toggle
@@ -203,14 +208,9 @@ bindsym $mod+Mod1+m exec --no-startup-id $HOME/.local/bin/mpc-show-current-song
 # TODO: mpc_current_song_and_volume.sh
 bindsym $mod+Control+F10 exec --no-startup-id $HOME/.local/bin/mpc-show-current-volume
 
-# open terminal inside workspace
-bindsym $mod+o exec --no-startup-id ~/.local/bin/workspace
-bindsym $mod+Shift+o exec --no-startup-id ~/.local/bin/workspace-paste
-bindsym $mod+Control+o exec --no-startup-id kitty nvim ~/.local/share/dmn/workspaces
-
 # type snippet
 bindsym $mod+i exec --no-startup-id ~/.local/bin/snippet
-bindsym $mod+Control+i exec --no-startup-id kitty nvim ~/.local/share/dmn/snippets
+bindsym $mod+Shift+i exec --no-startup-id kitty nvim ~/.local/share/dmn/snippets
 
 # poweroff
 bindcode $mod+Mod1+115 exec --no-startup-id poweroff
@@ -218,6 +218,8 @@ bindcode $mod+Mod1+115 exec --no-startup-id poweroff
 # wallpapers
 bindsym $mod+Shift+Prior exec --no-startup-id feh --bg-scale ~/Wallpapers/1.jpg
 bindsym $mod+Shift+Next exec --no-startup-id feh --bg-scale ~/Wallpapers/2.jpg
+
+# TODO: bind xkill
 
 # scratchpads
 for_window [instance="kitty-scratch|kitty-ncmpcpp"] floating enable
