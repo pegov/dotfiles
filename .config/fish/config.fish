@@ -4,8 +4,15 @@ set __fish_git_prompt_showstashstate 'yes'
 set __fish_git_prompt_showupstream 'yes'
 set __fish_git_prompt_color_branch yellow
 
+if set -q TMUX
+    set -e ITERM_PROFILE
+end
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
+    if string match -q -- 'tmux*' $TERM
+        set -g fish_vi_force_cursor 1
+    end
 end
 
 function fish_greeting
@@ -25,6 +32,7 @@ end
 # start X at login
 if status --is-login
     if test -z "$DISPLAY" -a $XDG_VTNR -eq 1
+        keychain --eval --quiet | source
         startx -- -keeptty
     end
 end
@@ -114,9 +122,7 @@ if [ "$TERM" = "xterm-kitty" ]
   alias ssh="kitty +kitten ssh"
 end
 
-alias vim="nvim"
 alias v="nvim"
-alias vi="nvim"
 
 alias ls="exa"
 alias l="exa -lg"
@@ -133,6 +139,7 @@ alias cj="cd (fd --type directory '' $HOME | fzf)"
 alias wj="cd (fd --type directory '' $HOME/dev | fzf)"
 alias oj="open (fd --type file '' $HOME | fzf)"
 alias vj="v (fd -H -E node_modules -E .git -E .cache -E '*.pyc' --type file '' $HOME | fzf)"
+alias fj="cd (sh $HOME/.local/bin/workspace-shell)"
 
 alias s="systemctl"
 alias ss="sudo systemctl"
@@ -152,6 +159,7 @@ set -Ux WINEPREFIX $XDG_DATA_HOME/wineprefixes/default
 
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.cargo/bin
+fish_add_path $HOME/go/bin
 
 # valgrind fix (https://bbs.archlinux.org/viewtopic.php?id=276422)
 set -Ux DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
