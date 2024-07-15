@@ -70,6 +70,7 @@ require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
     use 'nvim-tree/nvim-tree.lua'
+    use 'nvim-tree/nvim-web-devicons'
 
     -- use { 'dracula/vim', as = 'dracula' }
     use 'Mofiqul/dracula.nvim'
@@ -79,10 +80,10 @@ require('packer').startup(function(use)
     use 'tpope/vim-rhubarb'
     use 'lewis6991/gitsigns.nvim'
 
-    use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+    use 'nvim-lualine/lualine.nvim'           -- Fancier statusline
     use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-    use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
-    use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
+    use 'numToStr/Comment.nvim'               -- "gc" to comment visual regions/lines
+    use 'tpope/vim-sleuth'                    -- Detect tabstop and shiftwidth automatically
 
     use 'windwp/nvim-autopairs'
     use 'Vimjas/vim-python-pep8-indent'
@@ -133,6 +134,13 @@ require('packer').startup(function(use)
         },
     }
 
+    use {
+        'smoka7/multicursors.nvim',
+        requires = {
+            'nvimtools/hydra.nvim',
+        },
+    }
+
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-cmdline'
@@ -146,9 +154,15 @@ require('packer').startup(function(use)
 
     use "abecodes/tabout.nvim"
 
-    use "ThePrimeagen/harpoon"
-
     use "petertriho/nvim-scrollbar"
+
+    use 'ray-x/go.nvim'
+
+    use 'stevearc/aerial.nvim'
+
+    use 'stevearc/oil.nvim'
+
+    use 'shoumodip/compile.nvim'
 
     if is_bootstrap then
         require('packer').sync()
@@ -175,6 +189,82 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 require("nvim-surround").setup({
     -- Configuration here, or leave empty to use defaults
 })
+
+local compile = require("compile")
+compile.bind {
+    ["n"] = compile.next,  -- Open the next error
+    ["p"] = compile.prev,  -- Open the previous error
+    ["o"] = compile.this,  -- Open the error under the cursor
+    ["r"] = compile.restart, -- Restart the compilation process
+    ["q"] = compile.stop,  -- Stop the compilation process
+}
+
+require("oil").setup({
+    columns = {
+        "icon",
+        -- "permissions",
+        -- "size",
+        -- "mtime",
+    },
+    win_options = {
+        wrap = false,
+        signcolumn = "yes",
+        cursorcolumn = false,
+        foldcolumn = "0",
+        spell = false,
+        list = false,
+        conceallevel = 3,
+        concealcursor = "nvic",
+    },
+    skip_confirm_for_simple_edits = true,
+    view_options = {
+        -- Show files and directories that start with "."
+        show_hidden = true,
+        -- This function defines what is considered a "hidden" file
+        is_hidden_file = function(name, bufnr)
+            return vim.startswith(name, ".")
+        end,
+        -- This function defines what will never be shown, even when `show_hidden` is set
+        is_always_hidden = function(name, bufnr)
+            return false
+        end,
+        -- Sort file names in a more intuitive order for humans. Is less performant,
+        -- so you may want to set to false if you work with large directories.
+        natural_order = true,
+        -- Sort file and directory names case insensitive
+        case_insensitive = false,
+        sort = {
+            -- sort order can be "asc" or "desc"
+            -- see :help oil-columns to see which columns are sortable
+            { "type", "asc" },
+            { "name", "asc" },
+        },
+    },
+})
+
+require('multicursors').setup {
+    normal_keys = {
+        -- to change default lhs of key mapping change the key
+        -- [','] = {
+        -- assigning nil to method exits from multi cursor mode
+        -- assigning false to method removes the binding
+        -- method = N.clear_others,
+        -- you can pass :map-arguments here
+        -- opts = { desc = 'Clear others' },
+        -- },
+        ['<C-/>'] = {
+            method = function()
+                require('multicursors.utils').call_on_selections(function(selection)
+                    vim.api.nvim_win_set_cursor(0, { selection.row + 1, selection.col + 1 })
+                    local line_count = selection.end_row - selection.row + 1
+                    vim.cmd('normal ' .. line_count .. 'gcc')
+                end)
+            end,
+            opts = { desc = 'comment selections' },
+        },
+    },
+    hint_config = false
+}
 
 -- Dracula(original) theme setup
 -- vim.g.dracula_colorterm = 0
@@ -212,13 +302,13 @@ dracula.setup({
         nontext = "#3B4048",
     },
     -- show the '~' characters after the end of buffers
-    show_end_of_buffer = false, -- default false
+    show_end_of_buffer = false,   -- default false
     -- use transparent background
-    transparent_bg = true, -- default false
+    transparent_bg = true,        -- default false
     -- set custom lualine background color
     lualine_bg_color = "#44475a", -- default nil
     -- set italic comment
-    italic_comment = false, -- default false
+    italic_comment = false,       -- default false
     -- overrides the default highlights see `:h synIDattr`
     overrides = {
         -- Examples
@@ -238,6 +328,8 @@ vim.g.maplocalleader = ' '
 
 vim.keymap.set('n', '<leader>l', '^')
 
+vim.keymap.set('n', '<leader>z', '^ze')
+
 vim.keymap.set('n', 'n', "v:count > 0 ? 'nzzzv' : 'n'", { expr = true, silent = true })
 vim.keymap.set('n', 'N', "v:count > 0 ? 'nzzzv' : 'N'", { expr = true, silent = true })
 
@@ -251,6 +343,8 @@ vim.keymap.set('i', '?', '?<C-g>u')
 vim.keymap.set('i', '[', '[<C-g>u')
 vim.keymap.set('i', '(', '(<C-g>u')
 vim.keymap.set('i', '{', '{<C-g>u')
+
+vim.keymap.set('i', '<C-;>', '<ESC>la') -- tabout
 
 vim.cmd [[nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k']]
 vim.cmd [[nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j']]
@@ -270,6 +364,8 @@ vim.keymap.set('n', '<leader><S-Tab>', ':tabprev<CR>')
 vim.keymap.set('n', '<Tab>', ':bnext<CR>')
 vim.keymap.set('n', '<S-Tab>', ':bprev<CR>')
 
+require('nvim-web-devicons').setup()
+
 require('nvim-tree').setup({
     hijack_netrw = false
 })
@@ -287,15 +383,48 @@ require('lualine').setup {
     },
 }
 
-vim.cmd [[highlight IndentBlanklineIndent1 guifg=#525252 gui=nocombine]]
-require("indent_blankline").setup {
-    char = '┊',
-    space_char_blankline = " ",
-    char_highlight_list = {
-        "IndentBlanklineIndent1",
-    },
-    show_trailing_blankline_indent = false,
+-- vim.cmd [[highlight IndentBlanklineIndent1 guifg=#525252 gui=nocombine]]
+-- require("indent_blankline").setup({
+--     char = '┊',
+--     space_char_blankline = " ",
+--     char_highlight_list = {
+--         "IndentBlanklineIndent1",
+--     },
+--     show_trailing_blankline_indent = false,
+-- })
+local highlight = {
+    "RainbowRed",
+    "RainbowYellow",
+    "RainbowBlue",
+    "RainbowOrange",
+    "RainbowGreen",
+    "RainbowViolet",
+    "RainbowCyan",
 }
+
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#525252" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#525252" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#525252" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#525252" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#525252" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#525252" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#525252" })
+end)
+
+require("ibl").setup({
+    indent = {
+        highlight = highlight,
+        char = '┊',
+        -- tab_char = "•"
+    },
+    scope = {
+        enabled = false
+    }
+})
 
 require("nvim-autopairs").setup()
 
@@ -355,15 +484,15 @@ require("scrollbar").setup({
     show = true,
     show_in_active_only = false,
     set_highlights = true,
-    folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
-    max_lines = false, -- disables if no. of lines in buffer exceeds this
+    folds = 1000,                -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
+    max_lines = false,           -- disables if no. of lines in buffer exceeds this
     hide_if_all_visible = false, -- Hides everything if all lines are visible
     throttle_ms = 100,
     handle = {
         text = " ",
-        blend = 30, -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
+        blend = 30,                 -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
         color = nil,
-        color_nr = nil, -- cterm
+        color_nr = nil,             -- cterm
         highlight = "CursorColumn",
         hide_if_all_visible = true, -- Hides handle if all lines are visible
     },
@@ -464,18 +593,10 @@ require("scrollbar").setup({
         diagnostic = true,
         gitsigns = false, -- Requires gitsigns
         handle = true,
-        search = false, -- Requires hlslens
-        ale = false, -- Requires ALE
+        search = false,   -- Requires hlslens
+        ale = false,      -- Requires ALE
     },
 })
-
-require("harpoon").setup()
-local harpoon_mark = require("harpoon.mark")
-local harpoon_ui = require("harpoon.ui")
-
-vim.keymap.set('n', '<leader>e', harpoon_mark.add_file)
-vim.keymap.set('n', '<C-e>', harpoon_ui.toggle_quick_menu)
-vim.keymap.set('n', '<C-i>', harpoon_ui.nav_next)
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -498,27 +619,25 @@ vim.keymap.set('n', '<leader>fb', ':Telescope file_browser<CR>')
 vim.keymap.set('n', '<leader>fc', ':Telescope file_browser path=%:p:h<CR>')
 
 require('nvim-treesitter.configs').setup {
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'tsx' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'tsx', 'markdown', 'markdown_inline', 'bash', 'fish' },
     highlight = { enable = true },
     indent = { enable = true, disable = { 'python', 'rust' } },
     incremental_selection = {
         enable = true,
         keymaps = {
-            -- init_selection = '<C-k>',
-            -- scope_incremental = '<C->',
-            -- node_incremental = '<C-k>',
+            init_selection = '<C-k>',
+            -- scope_incremental = '<C-k>',
+            node_incremental = '<C-k>',
         }
     }
 }
 
-require('tabout').setup({})
-
 require('treesitter-context').setup {
-    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-    trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+    enable = true,         -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 0,         -- How many lines the window should span. Values <= 0 mean no limit.
+    trim_scope = 'outer',  -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
     min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
-    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+    patterns = {           -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
         -- For all filetypes
         -- Note that setting an entry here replaces all other patterns for this entry.
         -- By setting the 'default' entry below, you can control which nodes you want to
@@ -596,7 +715,7 @@ require('treesitter-context').setup {
     -- [!] The options below are exposed but shouldn't require your attention,
     --     you can safely ignore them.
 
-    zindex = 20, -- The Z-index of the context window
+    zindex = 20,     -- The Z-index of the context window
     mode = 'cursor', -- Line used to calculate context. Choices: 'cursor', 'topline'
     -- Separator between context and content. Should be a single character string, like '-'.
     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
@@ -722,33 +841,34 @@ require('mason').setup()
 local mason_lspconfig = require 'mason-lspconfig'
 
 local servers = {
-    clangd = {},
-    pyright = {},
-    rust_analyzer = {
-        imports = {
-            granularity = {
-                group = "module",
-            },
-        },
-        checkOnSave = {
-            command = "clippy"
-        },
-        procMacro = {
-            enable = true
-        },
-        inlayHints = {
-            locationLinks = false
-        },
-        completion = {
-            callable = {
-                snippets = "add_parentheses",
-            }
-        }
-    },
-    tsserver = {},
+    -- clangd = {},
+    -- pyright = {},
+    -- rust_analyzer = {
+    --     imports = {
+    --         granularity = {
+    --             group = "module",
+    --         },
+    --     },
+    --     checkOnSave = {
+    --         command = "clippy"
+    --     },
+    --     procMacro = {
+    --         enable = true
+    --     },
+    --     inlayHints = {
+    --         locationLinks = false
+    --     },
+    --     completion = {
+    --         callable = {
+    --             snippets = "add_parentheses",
+    --         }
+    --     }
+    -- },
+    -- tsserver = {},
+    -- gopls = {},
     -- eslint = {},
-    html = {},
-    cssls = {},
+    -- html = {},
+    -- cssls = {},
     lua_ls = {
         Lua = {
             workspace = { checkThirdParty = false },
@@ -762,6 +882,8 @@ local null_ls = require("null-ls")
 
 null_ls.setup({
     sources = {
+        -- null_ls.builtins.formatting.gofmt,
+        null_ls.builtins.formatting.goimports,
         null_ls.builtins.diagnostics.eslint_d,
         null_ls.builtins.code_actions.eslint_d,
         -- null_ls.builtins.formatting.prettierd.with({
@@ -866,7 +988,7 @@ cmp.setup {
         end,
     },
     mapping = cmp.mapping.preset.insert {
-        ['<C-d>'] = cmp.mapping.scroll_docs( -4),
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-u>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<CR>'] = cmp.mapping.confirm {
@@ -885,8 +1007,8 @@ cmp.setup {
         ['<S-Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif luasnip.jumpable( -1) then
-                luasnip.jump( -1)
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
             else
                 fallback()
             end
@@ -929,28 +1051,28 @@ cmp.setup.cmdline(':', {
 
 cfg = {
     verbose = false, -- show debug line number
-    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    bind = true,     -- This is mandatory, otherwise border config won't get registered.
     -- If you want to hook lspsaga or other signature handler, pls set to false
-    doc_lines = 10, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
+    doc_lines = 10,  -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
     -- set to 0 if you DO NOT want any API comments be shown
     -- This setting only take effect in insert mode, it does not affect signature help in normal
     -- mode, 10 by default
 
-    max_height = 12, -- max height of signature floating_window
-    max_width = 80, -- max_width of signature floating_window
-    noice = false, -- set to true if you using noice to render markdown
-    wrap = true, -- allow doc/signature text wrap inside floating_window, useful if your lsp return doc/sig is too long
-    floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
+    max_height = 12,                       -- max height of signature floating_window
+    max_width = 80,                        -- max_width of signature floating_window
+    noice = false,                         -- set to true if you using noice to render markdown
+    wrap = true,                           -- allow doc/signature text wrap inside floating_window, useful if your lsp return doc/sig is too long
+    floating_window = true,                -- show hint in a floating window, set to false for virtual text only mode
     floating_window_above_cur_line = true, -- try to place the floating above the current line when possible Note:
     -- will set to true when fully tested, set to false will use whichever side has more space
     -- this setting will be helpful if you do not want the PUM and floating win overlap
 
-    floating_window_off_x = 5, -- adjust float windows x position.
+    floating_window_off_x = 5,                           -- adjust float windows x position.
     -- can be either a number or function
-    floating_window_off_y = function() -- adjust float windows y position. e.g. set to -2 can make floating window move up 2 lines
+    floating_window_off_y = function()                   -- adjust float windows y position. e.g. set to -2 can make floating window move up 2 lines
         local linenr = vim.api.nvim_win_get_cursor(0)[1] -- buf line number
         local pumheight = vim.o.pumheight
-        local winline = vim.fn.winline() -- line number in the window
+        local winline = vim.fn.winline()                 -- line number in the window
         local winheight = vim.fn.winheight(0)
 
         -- window top
@@ -964,27 +1086,27 @@ cfg = {
         end
         return 0
     end,
-    close_timeout = 2000, -- close floating window after ms when laster parameter is entered
-    fix_pos = false, -- set to true, the floating window will not auto-close until finish all parameters
-    hint_enable = true, -- virtual hint enable
-    hint_prefix = "> ", -- Panda for parameter, NOTE: for the terminal not support emoji, might crash
+    close_timeout = 2000,                         -- close floating window after ms when laster parameter is entered
+    fix_pos = false,                              -- set to true, the floating window will not auto-close until finish all parameters
+    hint_enable = true,                           -- virtual hint enable
+    hint_prefix = "> ",                           -- Panda for parameter, NOTE: for the terminal not support emoji, might crash
     hint_scheme = "String",
     hi_parameter = "LspSignatureActiveParameter", -- how your parameter will be highlight
     handler_opts = {
-        border = "rounded" -- double, rounded, single, shadow, none, or a table of borders
+        border = "rounded"                        -- double, rounded, single, shadow, none, or a table of borders
     },
-    always_trigger = false, -- sometime show signature on new line or in middle of parameter can be confusing, set it to false for #58
-    auto_close_after = nil, -- autoclose signature float win after x sec, disabled if nil.
-    extra_trigger_chars = {}, -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
-    zindex = 200, -- by default it will be on top of all floating windows, set to <= 50 send it to bottom
-    padding = '', -- character to pad on left and right of signature can be ' ', or '|'  etc
-    transparency = nil, -- disabled by default, allow floating win transparent value 1~100
-    shadow_blend = 36, -- if you using shadow as border use this set the opacity
-    shadow_guibg = 'Black', -- if you using shadow as border use this set the color e.g. 'Green' or '#121315'
-    timer_interval = 200, -- default timer check interval set to lower value if you want to reduce latency
-    toggle_key = nil, -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
-    select_signature_key = nil, -- cycle to next signature, e.g. '<M-n>' function overloading
-    move_cursor_key = nil, -- imap, use nvim_set_current_win to move cursor between current win and floating
+    always_trigger = false,                       -- sometime show signature on new line or in middle of parameter can be confusing, set it to false for #58
+    auto_close_after = nil,                       -- autoclose signature float win after x sec, disabled if nil.
+    extra_trigger_chars = {},                     -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
+    zindex = 200,                                 -- by default it will be on top of all floating windows, set to <= 50 send it to bottom
+    padding = '',                                 -- character to pad on left and right of signature can be ' ', or '|'  etc
+    transparency = nil,                           -- disabled by default, allow floating win transparent value 1~100
+    shadow_blend = 36,                            -- if you using shadow as border use this set the opacity
+    shadow_guibg = 'Black',                       -- if you using shadow as border use this set the color e.g. 'Green' or '#121315'
+    timer_interval = 200,                         -- default timer check interval set to lower value if you want to reduce latency
+    toggle_key = nil,                             -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
+    select_signature_key = nil,                   -- cycle to next signature, e.g. '<M-n>' function overloading
+    move_cursor_key = nil,                        -- imap, use nvim_set_current_win to move cursor between current win and floating
 }
 
 require('lsp_signature').setup(cfg)
@@ -997,3 +1119,43 @@ vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")
+
+
+require('tabout').setup({})
+
+require('aerial').setup({
+    on_attach = function(bufnr)
+        -- Jump forwards/backwards with '{' and '}'
+        vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+        vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+    end,
+})
+vim.keymap.set("n", "<leader><leader>s", "<cmd>AerialToggle left<CR>")
+
+require("go").setup({
+    lsp_inlay_hints = {
+        enable = true,
+        only_current_line = false,
+        style = "eol",
+    },
+    lsp_cfg = {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        -- other setups
+        settings = {
+            gopls = {
+                usePlaceholders = false,
+            },
+        }
+    }
+})
+
+local format_sync_grp = vim.api.nvim_create_augroup("goimports", {})
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.go",
+    callback = function()
+        require('go.format').gofmt()
+        -- require('go.format').goimports()
+    end,
+    group = format_sync_grp,
+})
