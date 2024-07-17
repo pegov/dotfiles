@@ -137,6 +137,7 @@ alias dus="du -d 1 -h | sort -h -r"
 
 alias cj="cd (fd --type directory '' $HOME | fzf)"
 alias wj="cd (fd --type directory '' $HOME/dev | fzf)"
+alias wjv="cd (fd --type directory '' $HOME/dev | fzf) && v ."
 alias oj="open (fd --type file '' $HOME | fzf)"
 alias vj="v (fd -H -E node_modules -E .git -E .cache -E '*.pyc' --type file '' $HOME | fzf)"
 alias fj="cd (sh $HOME/.local/bin/workspace-shell)"
