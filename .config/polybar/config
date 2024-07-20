@@ -67,7 +67,7 @@ font-1 = "Roboto:style=Medium:pixelsize=14;2"
 font-2 = "Font Awesome 6 Free Solid:pixelsize=12;3"
 font-3 = "Font Awesome 6 Free Regular:pixelsize=12;3"
 
-modules-left = i3 i3-workspace-switch rofi
+modules-left = i3 i3-workspace-switch rofi terminal
 modules-center = mpd mpc-volume
 modules-right = filesystem pipewire-simple bluetoothctl xkeyboard eth memory cpu system-nvidia-smi date
 
@@ -128,6 +128,11 @@ menu-0-9-exec = i3-msg workspace 10
 type = custom/script
 exec = echo ""
 click-left = rofi -show run
+
+[module/terminal]
+type = custom/script
+exec = echo ""
+click-left = kitty
 
 [module/system-nvidia-smi]
 type = custom/script
