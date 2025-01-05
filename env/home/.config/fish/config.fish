@@ -131,6 +131,8 @@ alias la="exa -lag"
 
 alias nb="newsboat"
 
+alias lg="lazygit"
+
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 alias dus="du -d 1 -h | sort -h -r"
