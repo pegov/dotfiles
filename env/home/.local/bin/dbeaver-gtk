@@ -1,0 +1,2 @@
+#!/bin/sh
+GTK_THEME=adwaita:white dbeaver

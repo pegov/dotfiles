@@ -1,0 +1,104 @@
+# Manual installation
+
+## Core packages
+```bash
+sudo pacman -Syu
+sudo pacman -S --needed - < resources/pkgs.txt
+```
+
+## AUR packages
+```bash
+#  Install yay
+sudo pacman -S --needed git base-devel
+git clone https://github.com/Jguer/yay
+cd yay
+makepkg -si
+# Install packages
+yay -S --needed - < resources/pkgs-aur.txt
+```
+
+## Fonts
+
+### Windows fonts
+```bash
+mkdir /usr/local/share/fonts
+mkdir /usr/local/share/fonts/WindowsFonts
+cp /windows/Windows/Fonts/* /usr/local/share/fonts/WindowsFonts/
+chmod 644 /usr/local/share/fonts/WindowsFonts/*
+
+fc-cache --force
+fc-cache-32 --force
+```
+
+## Copy config
+```bash
+export HOST_ENV=<pc|laptop|rp>
+./dotfiles-copy
+```
+
+## systemd
+```bash
+systemctl --user enable --now mpd
+systemctl --user enable --now pipewire
+systemctl --user enable --now pipewire-pulse
+systemctl --user enable --now wireplumber
+systemctl --user enable --now bluetooth
+```
+
+## restore firefox
+backup on prev host:
+```bash
+tar zcvf mozilla.tar.gz ~/.mozilla
+# copy to new host
+tar xzvf mozilla.tar.gz -C ~/
+```
+
+## LXAppearance
+`lxappearance`
+
+## restore stuff
+- `~/.ssh`
+- `~/.config/.docker/config.json`
+- `~/.gitconfig`
+- `~/.kube/config`
+- `~/.netrc`
+- `~/.vscode/*`
+
+## Wallpaper
+Move wallpaper to ~/Wallpapers/
+```bash
+feh --bg-scale ~/Wallpapers/...
+```
+
+## manual
+
+### rust
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+### nnn
+`ttf-firacode-nerd` package is required!
+
+```bash
+git clone https://github.com/jarun/nnn
+cd nnn
+make O_NERD=1 strip
+cp ./nnn ~/.local/bin/nnn
+```
+
+### bruno
+Download AppImage from [latest release](https://github.com/usebruno/bruno/releases)
+
+### shadowsocks
+Download `shadowsocks-vX.XX.X.x86_64-unknown-linux-musl.tar.xz` from [latest release](https://github.com/shadowsocks/shadowsocks-rust/releases)
+
+```
+tar xvf shadowsocks-vX.XX.X.x86_64-unknown-linux-musl.tar.xz
+# and copy to path
+```
+
+### Nvim
+
+#### Go
+Insert private repos that do not format imports into `~/.local/share/dmn/nvim-private-go-no-imports-fmt-repos` file.

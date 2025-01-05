@@ -1,0 +1,4 @@
+#/bin/sh
+REPLACEMENT=$(echo $HOME | sed -e 's/[]\/$*.^[]/\\&/g')
+GOTO_PATH=$(grep -v '^#' ~/.local/share/dmn/workspaces | fzf | cut -d' ' -f1 | sed "s/~/${REPLACEMENT}/g")
+echo $GOTO_PATH

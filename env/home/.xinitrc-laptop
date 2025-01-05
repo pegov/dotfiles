@@ -1,0 +1,27 @@
+[[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+
+systemctl --user import-environment DISPLAY
+
+# increase repeat rate
+xset r rate 200 50
+
+# set resolution and refresh rate
+xrandr --output eDP --primary --mode 1920x1200 --rate 60
+
+setxkbmap -model pc105 -layout us,ru -variant qwerty -option grp:alt_shift_toggle,caps:escape
+
+picom --config $HOME/.config/picom/picom.conf -b
+
+# UNCOMMENT ME
+# restore background image
+# ~/.fehbg &
+
+# run xsettingd
+xsettingd &
+
+# turn bell off
+xset b off
+xset s 1800 1800
+xset dpms 1800 1800 1800
+
+exec i3

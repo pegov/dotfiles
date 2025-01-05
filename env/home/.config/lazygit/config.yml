@@ -1,0 +1,6 @@
+gui:
+  showRandomTip: false
+  showCommandLog: false
+
+  autoFetch: false
+  autoRefresh: false

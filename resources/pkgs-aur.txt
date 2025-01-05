@@ -1,0 +1,7 @@
+clickhouse-client-bin
+google-chrome
+hoppscotch-bin
+oras
+mpv-full
+visual-studio-code-bin
+ttf-unifont

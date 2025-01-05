@@ -1,0 +1,33 @@
+[[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+
+systemctl --user import-environment DISPLAY
+
+export LIBVA_DRIVER_NAME=nvidia
+
+# increase repeat rate
+xset r rate 200 50
+
+# set resolution and refresh rate
+xrandr \
+    --output DP-2 --primary --mode 2560x1440 --rate 143.97 \
+    --output DP-0 --mode 2560x1440 --rate 143.86 --rotate normal --right-of "DP-2"
+
+setxkbmap -model pc105 -layout us,ru -variant qwerty -option grp:alt_shift_toggle,caps:escape
+
+picom --config $HOME/.config/picom/picom.conf -b
+
+nvidia-settings --load-config-only
+
+# UNCOMMENT ME
+# restore background image
+# ~/.fehbg &
+
+# run xsettingd
+xsettingd &
+
+# turn bell off
+xset b off
+xset s 1800 1800
+xset dpms 1800 1800 1800
+
+exec i3

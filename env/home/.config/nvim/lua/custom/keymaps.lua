@@ -1,0 +1,53 @@
+vim.keymap.set("n", "<leader>l", "^")
+
+vim.keymap.set("n", "<leader>z", "^ze")
+
+vim.keymap.set("n", "n", "v:count > 0 ? 'nzzzv' : 'n'", { expr = true, silent = true })
+vim.keymap.set("n", "N", "v:count > 0 ? 'nzzzv' : 'N'", { expr = true, silent = true })
+
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+vim.keymap.set("i", ",", ",<C-g>u")
+vim.keymap.set("i", ".", ".<C-g>u")
+vim.keymap.set("i", "!", "!<C-g>u")
+vim.keymap.set("i", "?", "?<C-g>u")
+vim.keymap.set("i", "[", "[<C-g>u")
+vim.keymap.set("i", "(", "(<C-g>u")
+vim.keymap.set("i", "{", "{<C-g>u")
+
+-- vim.keymap.set('i', '<C-;>', '<ESC>la') -- tabout
+
+vim.cmd([[nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k']])
+vim.cmd([[nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j']])
+
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
+vim.keymap.set({ "n", "v" }, "<leader>d", '"_d')
+vim.keymap.set({ "n", "v" }, "<leader>p", '"_dP')
+
+vim.keymap.set("n", "<leader>gg", ":G<CR>")
+
+vim.keymap.set("n", "<leader><Tab>", ":tabnext<CR>")
+vim.keymap.set("n", "<leader><S-Tab>", ":tabprev<CR>")
+
+vim.keymap.set("n", "<Tab>", ":bnext<CR>")
+vim.keymap.set("n", "<S-Tab>", ":bprev<CR>")
+
+vim.keymap.set("n", "<C-q>", "<nop>")
+
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
+vim.keymap.set("n", "ge", vim.diagnostic.open_float)
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
+
+-- duplicate line and keep cursor on the same column
+vim.keymap.set("n", "<C-,>", "mmyyp`mj")
+vim.keymap.set("i", "<C-,>", "<ESC>mmyyp`mja")
+
+vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
+vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")

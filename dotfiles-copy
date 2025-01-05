@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+script_dir="$(dirname "${BASH_SOURCE[0]}")"
+
+dry="0"
+
+host_env_pc="pc"
+host_env_laptop="laptop"
+host_env_rp="rp"
+
+if [ -z "$HOST_ENV" ] || [[ $HOST_ENV != $host_env_pc && $HOST_ENV != $host_env_lap && $HOST_ENV != $host_env_rp ]]; then
+    echo "choose between $host_env_pc | $host_env_laptop | $host_env_rp"
+    exit 1
+fi
+
+echo "SELECTED HOST_ENV: $HOST_ENV"
+
+if [[ $1 == "--dry" ]]; then
+    echo "DRY: ON"
+    dry="1"
+fi
+
+log() {
+    if [[ $dry == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+src_home_root=$script_dir/env/home
+src_config_dir=$src_home_root/.config
+src_local_bin_dir=$src_home_root/.local/bin
+dst_home_root=$HOME/.config/home
+dst_config_dir=$HOME/.config
+dst_local_bin_dir=$HOME/.local/bin
+src_dir=""
+dst_dir=""
+
+setup_config_src_dst() {
+    src_dir=$src_config_dir/$1
+    dst_dir=$dst_config_dir/$1
+    if [[ $dry != "1" ]]; then
+        mkdir -p $dst_dir
+    fi
+    log "$src_dir -> $dst_dir"
+}
+
+copy_config_src_dst() {
+    log "copy config"
+    if [[ $dry != "1" ]]; then
+        cp -r $src_dir $dst_config_dir
+    fi
+}
+
+setup_config_and_copy() {
+    setup_config_src_dst $1
+    copy_config_src_dst
+}
+
+setup_config_src_dst "i3"
+log "custom copy"
+if [[ $dry != "1" ]]; then
+    cat $src_dir/config $src_dir/config-$HOST_ENV > $dst_dir/config
+fi
+
+setup_config_and_copy "dunst"
+setup_config_and_copy "feh"
+setup_config_and_copy "fish"
+setup_config_and_copy "fontconfig"
+setup_config_and_copy "gtk-3.0"
+setup_config_and_copy "kitty"
+setup_config_and_copy "lazygit"
+setup_config_and_copy "mpd"
+setup_config_and_copy "mpv"
+if [[ $dry != "1" ]]; then
+    cp "$src_dir/mpv-$HOST_ENV.conf" $dst_dir/mpv.conf
+    rm $dst_dir/mpv-*.conf
+fi
+setup_config_and_copy "newsboat"
+setup_config_and_copy "ncmpcpp"
+setup_config_and_copy "nnn"
+setup_config_and_copy "nvim"
+setup_config_and_copy "picom"
+setup_config_and_copy "polybar"
+setup_config_and_copy "qt5ct"
+setup_config_and_copy "qt6ct"
+setup_config_and_copy "rofi"
+setup_config_and_copy "zathura"
+
+
+if [[ $dry != "1" ]]; then
+    cp $src_home_root/.xinitrc-$HOST_ENV $dst_home_root/.xinitrc
+    cp $src_home_root/.Xresources-$HOST_ENV $dst_home_root/.Xresources
+fi
+
+if [[ $dry != "1" ]]; then
+    cp $src_local_bin_dir/* $dst_local_bin_dir/
+    mv $dst_local_bin_dir/polybar-toggle-$HOST_ENV $dst_local_bin_dir/polybar-toggle
+    rm $dst_local_bin_dir/polybar-toggle-*
+fi
