@@ -46,14 +46,17 @@ return {
 					-- Jump to the definition of the word under your cursor.
 					--  This is where a variable was first declared, or where a function is defined, etc.
 					--  To jump back, press <C-t>.
-					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					-- map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
 					-- Find references for the word under your cursor.
-					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+					-- map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+					map("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
 
 					-- Jump to the implementation of the word under your cursor.
 					--  Useful when your language has ways of declaring types without an actual implementation.
-					map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+					-- map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+					map("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
 
 					-- Jump to the type of the word under your cursor.
 					--  Useful when you're not sure what type a variable is and you want to see
@@ -177,7 +180,7 @@ return {
 							end)
 						end
 
-						map("<leader>m1", ":GoIfErr<CR>", "if err")
+						map("<leader>me", ":GoIfErr<CR>", "if err")
 						map("<leader>mm", callOptionsM, "go.nvim m")
 						map("<leader>mn", callOptionsN, "go.nvim n")
 					else
@@ -196,7 +199,9 @@ return {
 			})
 
 			local servers = {
-				-- clangd = {},
+				clangd = {
+					cmd = { "clangd", "--function-arg-placeholders=0" },
+				},
 				gopls = {},
 				-- pyright = {
 				--   settings = {

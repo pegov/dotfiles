@@ -61,6 +61,8 @@ vim.o.expandtab = true
 vim.o.smartindent = true
 vim.o.autoindent = true
 
+vim.o.grepprg = "rg --vimgrep -uu --smart-case"
+
 vim.cmd([[
 fun! TrimWhitespace()
     let l:save = winsaveview()
