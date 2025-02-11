@@ -30,7 +30,7 @@ log() {
 src_home_root=$script_dir/env/home
 src_config_dir=$src_home_root/.config
 src_local_bin_dir=$src_home_root/.local/bin
-dst_home_root=$HOME/.config/home
+dst_home_root=$HOME
 dst_config_dir=$HOME/.config
 dst_local_bin_dir=$HOME/.local/bin
 src_dir=""
