@@ -43,20 +43,31 @@ return {
 						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 
+					local function with_mark(action)
+						return function()
+							local buf = vim.api.nvim_get_current_buf()
+							local win = vim.api.nvim_get_current_win()
+							local cur = vim.api.nvim_win_get_cursor(win)
+							vim.api.nvim_buf_set_mark(buf, "J", cur[1], cur[2], {})
+							vim.api.nvim_buf_set_mark(buf, "j", cur[1], cur[2], {})
+							action()
+						end
+					end
+
 					-- Jump to the definition of the word under your cursor.
 					--  This is where a variable was first declared, or where a function is defined, etc.
 					--  To jump back, press <C-t>.
 					-- map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-					map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+					map("gd", with_mark(vim.lsp.buf.definition), "[G]oto [D]efinition")
 
 					-- Find references for the word under your cursor.
 					-- map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-					map("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+					map("gr", with_mark(vim.lsp.buf.references), "[G]oto [R]eferences")
 
 					-- Jump to the implementation of the word under your cursor.
 					--  Useful when your language has ways of declaring types without an actual implementation.
 					-- map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-					map("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+					map("gi", with_mark(vim.lsp.buf.implementation), "[G]oto [I]mplementation")
 
 					-- Jump to the type of the word under your cursor.
 					--  Useful when you're not sure what type a variable is and you want to see
