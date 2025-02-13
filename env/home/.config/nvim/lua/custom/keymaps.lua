@@ -82,3 +82,5 @@ local function grep_current_word()
 	vim.cmd("copen 15 | silent grep " .. word) -- Run the grep command
 end
 vim.keymap.set("n", "<leader>fl", grep_current_word)
+
+vim.keymap.set("n", "gj", "`J")
