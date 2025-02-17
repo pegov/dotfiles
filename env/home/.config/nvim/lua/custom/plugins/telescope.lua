@@ -40,6 +40,7 @@ return {
 				file_browser = {
 					hijack_netrw = false,
 				},
+				fzf = {},
 			},
 		})
 
@@ -63,7 +64,7 @@ return {
 			require("telescope.builtin").grep_string,
 			{ desc = "[S]earch current [W]ord" }
 		)
-		-- vim.keymap.set('n', '<leader>fg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+		vim.keymap.set("n", "<leader>fg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
 		vim.keymap.set("n", "<leader>fd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
 		vim.keymap.set("n", "<leader>fr", require("telescope.builtin").resume, { desc = "[S]earch [R]esume" })
 		vim.keymap.set("n", "<leader>fj", require("telescope.builtin").buffers, { desc = "[ ] Find existing buffers" })
@@ -75,4 +76,3 @@ return {
 		)
 	end,
 }
-

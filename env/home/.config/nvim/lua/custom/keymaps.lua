@@ -71,7 +71,7 @@ vim.keymap.set("n", "<C-q>", toggle_qf)
 vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")
 
-vim.keymap.set("n", "<leader>fg", ":copen 15 | :silent :grep ")
+-- vim.keymap.set("n", "<leader>fg", ":copen 15 | :silent :grep ")
 local function grep_current_word()
 	local word = vim.fn.expand("<cword>") -- Get the word under the cursor
 	if word == "" then
