@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+tmux_running=$(pgrep tmux)
+
+if [[ $1 == "ls" ]]; then
+    if [[ -z $tmux_running ]]; then
+        echo "tmux is not running"
+        exit 1
+    fi
+
+    session=$(tmux ls | cut -d" " -f1 | sed 's/.$//' | fzf)
+    tmux a -t $session
+    exit 0
+fi
+
+dirs=$(find -L ~/dev/personal ~/dev/work -mindepth 1 -maxdepth 4 -type d)
+if [[ -z $dirs ]]; then
+    echo "dirs are empty, perhaps you forgot to mount them?"
+    exit 1
+fi
+
+selected=$(echo "$dirs" | fzf)
+selected_name=$(basename "$selected" | tr . _)
+
+# OK - tmux is not running
+if [[ -z $tmux_running ]]; then
+    tmux new-session -d -s $selected_name -c "$selected" -n "nvim"
+    tmux send-keys -t $selected_name:1 "v" C-m
+    tmux new-window -t $selected_name:2 -c "$selected"
+    tmux select-window -t $selected_name:1
+    tmux a -t $selected_name
+    exit 0
+fi
+
+# OK - tmux is running but client is not attached, session with selected_name does not exist
+if [[ -z $TMUX ]] && ! tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux new-session -d -s $selected_name -c "$selected" -n "nvim"
+    tmux send-keys -t $selected_name:1 "v" C-m
+    tmux new-window -t $selected_name:2
+    tmux select-window -t $selected_name:1
+    tmux a -t $selected_name
+    exit 0
+fi
+
+# OK - tmux is running but client is not attached, session with selected_name exists
+if [[ -z $TMUX ]] && tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux a -t $selected_name
+    exit 0
+fi
+
+# OK - tmux is running and client is attached, session with selected_name does not exist
+if [[ ! -z $TMUX ]] && ! tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux new-session -d -s $selected_name -c "$selected" -n "nvim"
+    tmux send-keys -t $selected_name:1 "v" C-m
+    tmux new-window -t $selected_name:2
+    tmux select-window -t $selected_name:1
+    tmux switch-client -t $selected_name
+    exit 0
+fi
+
+# OK - tmux is running and client is attached, session with selected_name exists
+if [[ ! -z $TMUX ]] && tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux switch-client -t $selected_name
+    exit 0
+fi
