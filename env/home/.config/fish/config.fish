@@ -147,6 +147,11 @@ alias fj="cd (sh $HOME/.local/bin/workspace-shell)"
 alias s="systemctl"
 alias ss="sudo systemctl"
 
+alias tm="tmux-sessionizer"
+alias tma="tmux-sessionizer ls"
+
+alias rm="rm -v"
+
 set -Ux TERMINAL kitty
 
 set -Ux MYVIMRC $HOME/.config/nvim/init.lua
@@ -159,6 +164,10 @@ set -Ux XDG_CONFIG_HOME $HOME/.config
 set -Ux XDG_DATA_HOME $HOME/.local/share
 set -Ux XDG_CACHE_HOME $HOME/.cache
 set -Ux WINEPREFIX $XDG_DATA_HOME/wineprefixes/default
+
+set -Ux SSH_AUTH_SOCK $XDG_RUNTIME_DIR/ssh-agent.socket
+
+set -Ux QT_QPA_PLATFORMTHEME qt6ct
 
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.cargo/bin
