@@ -72,7 +72,7 @@ function n --wraps nnn --description 'support nnn quit and change directory'
 
     if test -e $NNN_TMPFILE
         source $NNN_TMPFILE
-        rm $NNN_TMPFILE
+        command rm $NNN_TMPFILE
     end
 end
 
