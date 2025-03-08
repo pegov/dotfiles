@@ -17,6 +17,8 @@ return {
 				"bash",
 				"fish",
 				"javascript",
+				"sql",
+				"json",
 			},
 			highlight = {
 				enable = true,
@@ -26,8 +28,8 @@ return {
 			incremental_selection = {
 				enable = true,
 				keymaps = {
-					init_selection = "<C-m>",
-					node_incremental = "<C-m>",
+					init_selection = "<C-y>",
+					node_incremental = "<C-y>",
 				},
 			},
 		})
