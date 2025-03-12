@@ -30,8 +30,8 @@ vim.keymap.set({ "n", "v" }, "<leader>p", '"_dP')
 
 vim.keymap.set("n", "<leader>gg", ":G<CR>")
 
-vim.keymap.set("n", "<leader><Tab>", ":tabnext<CR>")
-vim.keymap.set("n", "<leader><S-Tab>", ":tabprev<CR>")
+vim.keymap.set("n", "L", ":tabnext<CR>")
+vim.keymap.set("n", "H", ":tabprev<CR>")
 
 -- vim.keymap.set("n", "<Tab>", ":bnext<CR>")
 -- vim.keymap.set("n", "<S-Tab>", ":bprev<CR>")
