@@ -48,7 +48,6 @@ return {
 			vim.cmd((vim.bo.filetype == "oil") and "bd" or "Oil")
 		end, { nargs = 0 })
 
-		-- vim.keymap.set("n", "<leader>fc", ":OilToggle<CR>")
-		vim.keymap.set("n", "<C-m>", ":OilToggle<CR>")
+		vim.keymap.set("n", "<C-b>", ":OilToggle<CR>")
 	end,
 }
