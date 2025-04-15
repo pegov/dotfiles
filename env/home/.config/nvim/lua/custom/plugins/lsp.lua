@@ -150,9 +150,9 @@ return {
 
 						local optionsM = {
 							"GoAddTag json",
-							"GoAddTag",
+							"GoAddTag ",
 							"GoRmTag json",
-							"GoRmTag",
+							"GoRmTag ",
 							"GoClearTag",
 							"GoFillStruct",
 							"GoFillSwitch",
