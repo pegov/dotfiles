@@ -13,7 +13,7 @@ return {
 				ntree.tree.toggle({ find_file = true })
 			end
 
-			vim.keymap.set("n", "<leader>b", toggle_and_find)
+			vim.keymap.set("n", "<C-n>", toggle_and_find)
 		end,
 	},
 }
