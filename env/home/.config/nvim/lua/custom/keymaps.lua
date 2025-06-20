@@ -34,8 +34,12 @@ vim.keymap.set("n", "H", ":tabprev<CR>")
 
 vim.keymap.set("n", "<C-q>", "<nop>")
 
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
+vim.keymap.set("n", "[d", function()
+	vim.diagnostic.jump({ count = -1, float = false })
+end)
+vim.keymap.set("n", "]d", function()
+	vim.diagnostic.jump({ count = 1, float = false })
+end)
 vim.keymap.set("n", "ge", vim.diagnostic.open_float)
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
 
