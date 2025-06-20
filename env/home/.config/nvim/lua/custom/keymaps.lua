@@ -16,8 +16,6 @@ vim.keymap.set("i", "[", "[<C-g>u")
 vim.keymap.set("i", "(", "(<C-g>u")
 vim.keymap.set("i", "{", "{<C-g>u")
 
--- vim.keymap.set('i', '<C-;>', '<ESC>la') -- tabout
-
 vim.cmd([[nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k']])
 vim.cmd([[nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j']])
 
@@ -33,9 +31,6 @@ vim.keymap.set("n", "<leader>gg", ":G<CR>")
 vim.keymap.set("n", "<leader>tt", ":tabe %<CR>")
 vim.keymap.set("n", "L", ":tabnext<CR>")
 vim.keymap.set("n", "H", ":tabprev<CR>")
-
--- vim.keymap.set("n", "<Tab>", ":bnext<CR>")
--- vim.keymap.set("n", "<S-Tab>", ":bprev<CR>")
 
 vim.keymap.set("n", "<C-q>", "<nop>")
 
@@ -72,7 +67,6 @@ vim.keymap.set("n", "<C-q>", toggle_qf)
 vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")
 
--- vim.keymap.set("n", "<leader>fg", ":copen 15 | :silent :grep ")
 local function grep_current_word()
 	local word = vim.fn.expand("<cword>") -- Get the word under the cursor
 	if word == "" then
