@@ -14,7 +14,7 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 
-vim.o.colorcolumn = "90"
+vim.o.colorcolumn = "98"
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
@@ -56,14 +56,18 @@ vim.opt.langmap =
 vim.opt.termguicolors = true
 
 vim.o.linebreak = true
-vim.o.tabstop = 4
-vim.o.softtabstop = 4
-vim.o.shiftwidth = 0
+vim.o.tabstop = 2
+vim.o.softtabstop = 0
+vim.o.shiftwidth = 2
 vim.o.expandtab = true
 vim.o.smartindent = true
 vim.o.autoindent = true
 
 vim.o.grepprg = "rg --vimgrep -uu --smart-case"
+
+-- prevent flickering
+-- TODO: maybe remove after 0.11.3
+vim.g._ts_force_sync_parsing = true
 
 vim.cmd([[
 fun! TrimWhitespace()

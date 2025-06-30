@@ -53,7 +53,8 @@ return {
 					end,
 				},
 
-				-- completion = { completeopt = 'menu,menuone,noinsert' },
+				completion = { completeopt = "menu,menuone,noinsert" },
+				preselect = cmp.PreselectMode.None,
 
 				mapping = cmp.mapping.preset.insert({
 					["<C-n>"] = cmp.mapping(function(fallback)
