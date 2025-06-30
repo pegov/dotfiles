@@ -132,7 +132,7 @@ main()
   fi
 
   # Status right
-  tmux set-option -g status-right ""
+  tmux set-option -g status-right "#[bg=${green},fg=${dark_gray}]  %Y-%m-%d %H:%M  "
 
   for plugin in "${plugins[@]}"; do
 
