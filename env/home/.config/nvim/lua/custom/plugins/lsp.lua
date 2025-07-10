@@ -159,6 +159,7 @@ return {
 						}
 
 						local optionsN = {
+							"GoAddTest",
 							"GoTestFunc",
 							"GoTestFile",
 						}
@@ -406,7 +407,7 @@ return {
 								},
 								settings = {
 									gopls = {
-										completeFunctionCalls = true,
+										completeFunctionCalls = false,
 										usePlaceholders = false,
 										completeUnimported = true,
 										staticcheck = true,
