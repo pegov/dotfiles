@@ -1,13 +1,14 @@
 vim.opt.hidden = true
 vim.opt.errorbells = false
-vim.opt.wrap = false
+vim.opt.wrap = true
+vim.opt.breakindent = false
+vim.opt.swapfile = false
 
 vim.opt.number = true
 vim.opt.relativenumber = true
 
 vim.opt.mouse = "a"
 
-vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
