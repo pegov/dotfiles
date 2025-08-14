@@ -152,6 +152,10 @@ alias tma="tmux-sessionizer ls"
 
 alias rm="rm -v"
 
+alias k="kubectl"
+
+alias clc="clipcat-menu --finder fzf"
+
 set -Ux TERMINAL kitty
 
 set -Ux MYVIMRC $HOME/.config/nvim/init.lua
