@@ -136,6 +136,7 @@ alias lg="lazygit"
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 alias dus="du -d 1 -h | sort -h -r"
+alias dusa="du -d 1 -h -a | sort -h -r"
 
 alias cj="cd (fd --type directory '' $HOME | fzf)"
 alias wj="cd (fd --type directory '' $HOME/dev | fzf)"
