@@ -19,8 +19,13 @@ if [[ -z $dirs ]]; then
     exit 1
 fi
 
-selected=$(echo "$dirs" | fzf)
-selected_name=$(basename "$selected" | tr . _)
+if [[ $1 == "" ]]; then
+  selected=$(echo "$dirs" | fzf)
+  selected_name=$(basename "$selected" | tr . _)
+else
+  selected=$PWD
+  selected_name=$(basename $PWD | tr . _)
+fi
 
 # OK - tmux is not running
 if [[ -z $tmux_running ]]; then
