@@ -148,8 +148,9 @@ alias fj="cd (sh $HOME/.local/bin/workspace-shell)"
 alias s="systemctl"
 alias ss="sudo systemctl"
 
-alias tm="tmux-sessionizer"
-alias tma="tmux-sessionizer ls"
+alias tm="tmux-sessionizer" # create new session using fzf
+alias tma="tmux-sessionizer ls" # attach to the existing session
+alias tmc="tmux-sessionizer current" # create/attach tmux session using the current directory
 
 alias rm="rm -v"
 
