@@ -85,4 +85,5 @@ vim.keymap.set("n", "<leader>fl", grep_current_word)
 vim.keymap.set("n", "gj", "`J")
 
 -- cgn for visual selection
-vim.keymap.set("v", "<C-n>", "y<ESC>/<C-r>0<CR>Ncgn")
+vim.keymap.set("v", "<C-m>", "y<ESC>/<C-r>0<CR>Ncgn")
+vim.keymap.set("n", "<C-m>", "cgn")
