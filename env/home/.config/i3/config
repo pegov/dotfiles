@@ -156,3 +156,9 @@ for_window [instance="kitty-scratch|kitty-ncmpcpp"] move scratchpad
 for_window [instance="kitty-scratch|kitty-ncmpcpp"] move position center
 for_window [instance="kitty-ncmpcpp"] resize set 2460 1380
 bindsym $mod+Control+m exec --no-startup-id ~/.local/bin/scratchpad "kitty-ncmpcpp" "kitty --name kitty-ncmpcpp ncmpcpp"
+
+bindsym $mod+Mod1+h exec --no-startup-id xdotool mousemove_relative -- -12  0
+bindsym $mod+Mod1+l exec --no-startup-id xdotool mousemove_relative --  12  0
+bindsym $mod+Mod1+j exec --no-startup-id xdotool mousemove_relative --  0  12
+bindsym $mod+Mod1+k exec --no-startup-id xdotool mousemove_relative --  0 -12
+bindsym $mod+Mod1+space exec --no-startup-id xdotool click --clearmodifiers 1
