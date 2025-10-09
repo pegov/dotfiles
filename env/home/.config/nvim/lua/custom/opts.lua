@@ -59,8 +59,9 @@ vim.opt.termguicolors = true
 vim.o.linebreak = true
 vim.o.tabstop = 2
 vim.o.softtabstop = 0
-vim.o.shiftwidth = 2
+vim.o.shiftwidth = 0
 vim.o.expandtab = true
+vim.o.smarttab = true
 vim.o.smartindent = true
 vim.o.autoindent = true
 
