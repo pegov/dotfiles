@@ -142,7 +142,7 @@ return {
 					--   client.server_capabilities.hoverProvider = false
 					-- end
 					if client.name == "gopls" then
-						map("<leader>th", function()
+						map("<leader>hh", function()
 							local status = vim.lsp.inlay_hint.is_enabled() and "OFF" or "ON"
 							vim.api.nvim_notify("Toggling inlay hints " .. status, vim.log.levels.INFO, {})
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
@@ -205,7 +205,7 @@ return {
 						map("<leader>mn", callOptionsN, "go.nvim n")
 					else
 						if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-							map("<leader>th", function()
+							map("<leader>hh", function()
 								vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
 							end, "[T]oggle Inlay [H]ints")
 						end
@@ -220,9 +220,39 @@ return {
 
 			local servers = {
 				clangd = {
-					cmd = { "clangd", "--function-arg-placeholders=0" },
+					-- cmd = { "clangd", "--function-arg-placeholders=0" },
+					-- cmd = { "clangd", "--enable-config" },
+					-- init_options = {
+					-- 	compilationDatabasePath = "./build", -- or a more specific path
+					-- },
+					-- settings = {
+					-- 	clangd = {
+					-- 		InlayHints = {
+					-- 			Designators = true,
+					-- 			Enabled = true,
+					-- 			ParameterNames = true,
+					-- 			DeducedTypes = true,
+					-- 		},
+					-- 	},
+					-- },
 				},
-				gopls = {},
+				gopls = {
+					settings = {
+						gopls = {
+							buildFlags = { "-tags=containers" },
+							hints = {
+								assignVariableTypes = true, -- Show types for assigned variables
+								compositeLiteralFields = true, -- Show field names in composite literals
+								compositeLiteralTypes = true, -- Show types in composite literals
+								constantValues = true, -- Show constant values
+								functionTypeParameters = true, -- Show types for function parameters
+								parameterNames = true, -- Show parameter names in function calls
+								rangeVariableTypes = true, -- Show types for range variables in for loops
+							},
+							-- Other gopls settings can go here
+						},
+					},
+				},
 				-- pyright = {
 				--   settings = {
 				--     pyright = {
@@ -236,7 +266,19 @@ return {
 				--   },
 				-- },
 				-- pyright = {},
-				rust_analyzer = {},
+				rust_analyzer = {
+					settings = {
+						["rust-analyzer"] = {
+							inlayHints = {
+								-- Configure specific inlay hint types as needed
+								typeHints = { enable = true },
+								parameterHints = { enable = true },
+								chainingHints = { enable = true },
+								-- ... other inlay hint settings
+							},
+						},
+					},
+				},
 				-- ruff_lsp = {},
 				lua_ls = {
 					-- cmd = {...},
@@ -369,7 +411,7 @@ return {
 								tag_transform = "snakecase",
 								tag_options = "json=",
 								lsp_inlay_hints = {
-									enable = false,
+									enable = true,
 								},
 							})
 
@@ -390,7 +432,10 @@ return {
 									"gopls",
 									"-remote.debug=:0",
 								},
-								flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
+								flags = {
+									allow_incremental_sync = true,
+									debounce_text_changes = 500,
+								},
 								handlers = {
 									[range_format] = function(...)
 										vim.lsp.handlers[range_format](...)
@@ -407,6 +452,7 @@ return {
 								},
 								settings = {
 									gopls = {
+										buildFlags = { "-tags=containers" },
 										completeFunctionCalls = false,
 										usePlaceholders = false,
 										completeUnimported = true,
