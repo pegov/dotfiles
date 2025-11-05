@@ -40,11 +40,11 @@ return {
 					end,
 				})
 				if lg_term then
-					lg_term:toggle(size(), direction)
+					lg_term:toggle(size, direction)
 
 					vim.cmd("set ft=lazygit")
-					vim.keymap.set("t", "<a-q>", function()
-						lg_term:toggle(size(), direction)
+					vim.keymap.set("t", "<F3>", function()
+						lg_term:toggle(size, direction)
 					end, { buffer = true })
 				end
 			else
@@ -78,7 +78,7 @@ return {
 		end
 
 		vim.api.nvim_create_user_command("LazyGitToggle", lg_toggle, {})
-		vim.keymap.set("n", "<leader><leader>l", "<cmd>LazyGitToggle<cr>", {})
+		vim.keymap.set("n", "<F3>", "<cmd>LazyGitToggle<cr>", {})
 
 		vim.api.nvim_create_user_command("GeneralTermToggle", ge_term_toggle, {})
 		vim.keymap.set("n", "<F2>", "<cmd>GeneralTermToggle<cr>", {})
