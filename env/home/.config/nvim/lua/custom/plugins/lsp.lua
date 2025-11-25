@@ -276,6 +276,10 @@ return {
 								chainingHints = { enable = true },
 								-- ... other inlay hint settings
 							},
+							completion = {
+								addCallParenthesis = false,
+								addCallArgumentSnippets = false,
+							},
 						},
 					},
 				},
