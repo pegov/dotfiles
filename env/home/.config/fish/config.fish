@@ -43,7 +43,7 @@ function su
 end
 
 # nnn cd on quit
-function n --wraps nnn --description 'support nnn quit and change directory'
+function n2 --wraps nnn --description 'support nnn quit and change directory'
     # Block nesting of nnn in subshells
     if test -n "$NNNLVL"
         if [ (expr $NNNLVL + 0) -ge 1 ]
@@ -73,6 +73,19 @@ function n --wraps nnn --description 'support nnn quit and change directory'
     if test -e $NNN_TMPFILE
         source $NNN_TMPFILE
         command rm $NNN_TMPFILE
+    end
+end
+
+function n --description 'Change to directory after yazi exits'
+    set tmp (mktemp -t "yazi-cwd.XXXXXX")
+    yazi $argv --cwd-file="$tmp"
+
+    if test -f "$tmp"
+        set cwd (cat "$tmp")
+        if test -n "$cwd" -a "$cwd" != "$PWD"
+            cd "$cwd"
+        end
+        /usr/bin/rm -f "$tmp"
     end
 end
 
