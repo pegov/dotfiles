@@ -12,3 +12,7 @@ desc = "Show or hide the preview pane"
 on   = "<C-h>"
 run  = "plugin toggle-pane min-parent"
 desc = "Show or hide the parent pane"
+
+[[mgr.prepend_keymap]]
+on  = "<C-n>"
+run = "shell -- dragon -x -i -T %h"
