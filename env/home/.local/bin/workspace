@@ -1,2 +1,0 @@
-#/bin/sh
-kitty -d $(grep -v '^#' ~/.local/share/dmn/workspaces | rofi -dmenu -p workspace | cut -d' ' -f1)

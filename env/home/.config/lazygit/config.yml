@@ -1,8 +1,0 @@
-gui:
-  showRandomTip: false
-  showCommandLog: false
-  useHunkModeInStagingView: false
-
-git:
-  autoFetch: false
-  autoRefresh: false
